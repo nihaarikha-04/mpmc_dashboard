@@ -1,9 +1,11 @@
 "use client"
-
+import {GitHubLogoIcon } from "@radix-ui/react-icons"
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts"
 import { TrendingUp } from "lucide-react"
+import React from 'react';
+import { Button } from '@/components/ui/button';
 
 const HydroponicDashboard = () => {
   const [tdsData, setTdsData] = useState<number[]>([])
@@ -16,6 +18,14 @@ const HydroponicDashboard = () => {
   const [currentWaterLevel, setCurrentWaterLevel] = useState<number>(0)
 
   const [counter, setCounter] = useState(0)
+
+  const handleDownload = () => {
+    const reportUrl = 'https://raw.githubusercontent.com/msnabiel/Water-Quality-Monitor-Vegetable-Hydroponics/main/SensorReview.pdf';
+    const link = document.createElement('a');
+    link.href = reportUrl;
+    link.download = 'SensorReview.pdf'; // Optional: specify download filename
+    link.click();
+};
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -135,7 +145,23 @@ const HydroponicDashboard = () => {
           </div>
         </CardFooter>
       </Card>
+      <div className="flex flex-col items-center justify-center gap-4 p-8">
+            <p className="text-lg font-medium text-center">
+                Get a detailed project report with all insights and analyses.
+            </p>
+            <div className="flex gap-4">
+                <Button variant="outline" onClick={handleDownload} className="text-black">
+                    Download Project Report
+                </Button>
+                <a href="https://github.com/msnabiel/Water-Quality-Monitor-Vegetable-Hydroponics" target="_blank" rel="noopener noreferrer">
+                    <Button>
+                        <GitHubLogoIcon className="mr-2" /> View on GitHub
+                    </Button>
+                </a>
+            </div>  
+        </div>
     </div>
+    
   )
 }
 
