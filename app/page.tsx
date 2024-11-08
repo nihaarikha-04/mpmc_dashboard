@@ -59,7 +59,7 @@ const HydroponicDashboard = () => {
     <div className="bg-black text-white p-5 min-h-screen overflow-x-auto">
       <Card>
         <CardHeader>
-          <CardTitle className="text-center">Hydroponic Plant Monitoring Dashboard</CardTitle>
+          <CardTitle className="text-center">Water Quality Monitoring System</CardTitle>
           <CardDescription className="text-center">Real-time monitoring of TDS, pH levels, and water levels for one hydroponic plant</CardDescription>
         </CardHeader>
         <CardContent>
@@ -72,7 +72,7 @@ const HydroponicDashboard = () => {
               <span className="font-bold">pH Level:</span> {currentPh.toFixed(2)}
             </div>
             <div className="metric-card text-left flex-1 min-w-[150px]">
-              <span className="font-bold">Water Level (cm):</span> {currentWaterLevel.toFixed(2)}
+              <span className="font-bold">Turbidity :</span> {currentWaterLevel.toFixed(2)}
             </div>
           </div>
 
@@ -104,9 +104,34 @@ const HydroponicDashboard = () => {
               </div>
             </div>
 
+            <div className="flex-1 min-w-[300px] max-w-full mb-4"> 
+              <h3 className="text-center font-bold">pH Over Time</h3>
+              <div className="overflow-hidden">
+                <ResponsiveContainer width="100%" height={300}>
+                  <AreaChart
+                    data={chartData.map(({ time, tds }) => ({ time, tds })).filter(Boolean)}
+                    margin={{ top: 5, right: 30, left: 20, bottom: 30 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#666" />
+                    <XAxis
+                      dataKey="time"
+                      tickLine={false}
+                      axisLine={false}
+                      tickMargin={8}
+                      label={{ value: 'Seconds', position: 'insideBottom', offset: -25, textAnchor: 'middle' }}
+                    />
+                    <YAxis 
+                      label={{ value: 'TDS (ppm)', angle: -90, position: 'insideLeft', offset: 0 }} // Set offset to 0 for consistency
+                    />
+                    <Area type="monotone" dataKey="tds" fill="blue" stroke="blue" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
             {/* Chart for pH Level and Water Level */}
             <div className="flex-1 min-w-[300px] max-w-full mb-4">
-              <h3 className="text-center font-bold">pH Level and Water Level Over Time</h3>
+              <h3 className="text-center font-bold">Turbidity Over time </h3>
               <div className="overflow-hidden">
                 <ResponsiveContainer width="100%" height={300}>
                   <AreaChart
@@ -132,18 +157,7 @@ const HydroponicDashboard = () => {
             </div>
           </div>
         </CardContent>
-        <CardFooter>
-          <div className="flex w-full items-start gap-2 text-sm">
-            <div className="grid gap-2">
-              <div className="flex items-center gap-2 font-medium leading-none">
-                Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-              </div>
-              <div className="flex items-center gap-2 leading-none text-muted-foreground">
-                January - June 2024
-              </div>
-            </div>
-          </div>
-        </CardFooter>
+        {/*   */}
       </Card>
       <div className="flex flex-col items-center justify-center gap-4 p-8">
             <p className="text-lg font-medium text-center">
