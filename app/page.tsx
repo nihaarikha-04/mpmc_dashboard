@@ -60,7 +60,6 @@ const HydroponicDashboard = () => {
       <Card>
         <CardHeader>
           <CardTitle className="text-center">Water Quality Monitoring System</CardTitle>
-          <CardDescription className="text-center">Real-time monitoring of TDS, pH levels, and water levels for one hydroponic plant</CardDescription>
         </CardHeader>
         <CardContent>
           <h2 className="text-left font-bold">Current Readings</h2>
