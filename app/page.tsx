@@ -1,13 +1,13 @@
 "use client"
-import {GitHubLogoIcon } from "@radix-ui/react-icons"
-import { useEffect, useState } from "react"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts"
-import { TrendingUp } from "lucide-react"
-import React from 'react';
-import { Button } from '@/components/ui/button';
 
-const HydroponicDashboard = () => {
+import { GitHubLogoIcon } from "@radix-ui/react-icons"
+import { useEffect, useState } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts"
+import { Button } from "@/components/ui/button"
+import React from "react"
+
+const HydroTrack = () => {
   const [tdsData, setTdsData] = useState<number[]>([])
   const [phData, setPhData] = useState<number[]>([])
   const [waterLevelData, setWaterLevelData] = useState<number[]>([])
@@ -18,14 +18,16 @@ const HydroponicDashboard = () => {
   const [currentWaterLevel, setCurrentWaterLevel] = useState<number>(0)
 
   const [counter, setCounter] = useState(0)
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(false) // Dark mode state
 
   const handleDownload = () => {
-    const reportUrl = 'https://raw.githubusercontent.com/msnabiel/Water-Quality-Monitor-Vegetable-Hydroponics/main/SensorReview.pdf';
-    const link = document.createElement('a');
-    link.href = reportUrl;
-    link.download = 'SensorReview.pdf'; // Optional: specify download filename
-    link.click();
-};
+    const reportUrl =
+      "https://github.com/nihaarikha-04/mpmc_dashboard/raw/main/assets/WaterMonitorSystem.pdf"
+    const link = document.createElement("a")
+    link.href = reportUrl
+    link.download = "WaterMonitor.pdf"
+    link.click()
+  }
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -48,15 +50,43 @@ const HydroponicDashboard = () => {
     return () => clearInterval(interval)
   }, [counter])
 
-  const chartData = timeSeconds.map((time, index) => ({
-    time,
-    tds: tdsData[index],
-    ph: phData[index],
-    waterLevel: waterLevelData[index],
-  })).filter(Boolean)
+  const chartData = timeSeconds
+    .map((time, index) => ({
+      time,
+      tds: tdsData[index],
+      ph: phData[index],
+      waterLevel: waterLevelData[index],
+    }))
+    .filter(Boolean)
+
+  const toggleDarkMode = () => {
+    setIsDarkMode((prev) => !prev)
+  }
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.body.classList.add("dark")
+    } else {
+      document.body.classList.remove("dark")
+    }
+  }, [isDarkMode])
 
   return (
-    <div className="bg-black text-white p-5 min-h-screen overflow-x-auto">
+    <div
+      className={`p-5 min-h-screen overflow-x-auto ${
+        isDarkMode ? "bg-black text-white" : "bg-white text-black"
+      }`}
+    >
+      {/* Dark Mode Toggle Button */}
+      <div className="flex justify-end mb-4">
+        <Button
+          onClick={toggleDarkMode}
+          className={isDarkMode ? "bg-white text-black" : "bg-black text-white"}
+        >
+          {isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+        </Button>
+      </div>
+
       <Card>
         <CardHeader>
           <CardTitle className="text-center">Water Quality Monitoring System</CardTitle>
@@ -78,7 +108,7 @@ const HydroponicDashboard = () => {
           {/* Graphs Container */}
           <div className="flex flex-wrap justify-between mt-4">
             {/* Chart for TDS */}
-            <div className="flex-1 min-w-[300px] max-w-full mb-4"> 
+            <div className="flex-1 min-w-[300px] max-w-full mb-4">
               <h3 className="text-center font-bold">TDS Over Time</h3>
               <div className="overflow-hidden">
                 <ResponsiveContainer width="100%" height={300}>
@@ -92,18 +122,22 @@ const HydroponicDashboard = () => {
                       tickLine={false}
                       axisLine={false}
                       tickMargin={8}
-                      label={{ value: 'Seconds', position: 'insideBottom', offset: -25, textAnchor: 'middle' }}
+                      label={{
+                        value: "Seconds",
+                        position: "insideBottom",
+                        offset: -25,
+                        textAnchor: "middle",
+                      }}
                     />
-                    <YAxis 
-                      label={{ value: 'TDS (ppm)', angle: -90, position: 'insideLeft', offset: 0 }} // Set offset to 0 for consistency
-                    />
+                    <YAxis label={{ value: "TDS (ppm)", angle: -90, position: "insideLeft", offset: 0 }} />
                     <Area type="monotone" dataKey="tds" fill="blue" stroke="blue" />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
             </div>
 
-            <div className="flex-1 min-w-[300px] max-w-full mb-4"> 
+            {/* Other Graphs */}
+            <div className="flex-1 min-w-[300px] max-w-full mb-4">
               <h3 className="text-center font-bold">pH Over Time</h3>
               <div className="overflow-hidden">
                 <ResponsiveContainer width="100%" height={300}>
@@ -117,11 +151,14 @@ const HydroponicDashboard = () => {
                       tickLine={false}
                       axisLine={false}
                       tickMargin={8}
-                      label={{ value: 'Seconds', position: 'insideBottom', offset: -25, textAnchor: 'middle' }}
+                      label={{
+                        value: "Seconds",
+                        position: "insideBottom",
+                        offset: -25,
+                        textAnchor: "middle",
+                      }}
                     />
-                    <YAxis 
-                      label={{ value: 'TDS (ppm)', angle: -90, position: 'insideLeft', offset: 0 }} // Set offset to 0 for consistency
-                    />
+                    <YAxis label={{ value: "TDS (ppm)", angle: -90, position: "insideLeft", offset: 0 }} />
                     <Area type="monotone" dataKey="tds" fill="blue" stroke="blue" />
                   </AreaChart>
                 </ResponsiveContainer>
@@ -130,7 +167,7 @@ const HydroponicDashboard = () => {
 
             {/* Chart for pH Level and Water Level */}
             <div className="flex-1 min-w-[300px] max-w-full mb-4">
-              <h3 className="text-center font-bold">Turbidity Over time </h3>
+              <h3 className="text-center font-bold">Turbidity Over Time</h3>
               <div className="overflow-hidden">
                 <ResponsiveContainer width="100%" height={300}>
                   <AreaChart
@@ -143,11 +180,14 @@ const HydroponicDashboard = () => {
                       tickLine={false}
                       axisLine={false}
                       tickMargin={8}
-                      label={{ value: 'Seconds', position: 'insideBottom', offset: -25, textAnchor: 'middle' }}
+                      label={{
+                        value: "Seconds",
+                        position: "insideBottom",
+                        offset: -25,
+                        textAnchor: "middle",
+                      }}
                     />
-                    <YAxis 
-                      label={{ value: 'Values', angle: -90, position: 'insideLeft', offset: 0 }} // Set offset to 0 for consistency
-                    />
+                    <YAxis label={{ value: "Values", angle: -90, position: "insideLeft", offset: 0 }} />
                     <Area type="monotone" dataKey="ph" fill="green" stroke="green" />
                     <Area type="monotone" dataKey="waterLevel" fill="orange" stroke="orange" />
                   </AreaChart>
@@ -156,26 +196,36 @@ const HydroponicDashboard = () => {
             </div>
           </div>
         </CardContent>
-        {/*   */}
       </Card>
+
+      {/* Download Button */}
       <div className="flex flex-col items-center justify-center gap-4 p-8">
-            <p className="text-lg font-medium text-center">
-                Get a detailed project report with all insights and analyses.
-            </p>
-            <div className="flex gap-4">
-                <Button variant="outline" onClick={handleDownload} className="text-black">
-                    Download Project Report
-                </Button>
-                <a href="https://github.com/msnabiel/Water-Quality-Monitor-Vegetable-Hydroponics" target="_blank" rel="noopener noreferrer">
-                    <Button>
-                        <GitHubLogoIcon className="mr-2" /> View on GitHub
-                    </Button>
-                </a>
-            </div>  
+        <p className="text-lg font-medium text-center">
+          The Repository with the Report is given below for further acknowledgments.
+        </p>
+        <div className="flex gap-4">
+          <Button
+            variant="outline"
+            onClick={handleDownload}
+            className={isDarkMode ? "text-white" : "text-black"}
+          >
+            Download Project Report
+          </Button>
+          <a
+            href="https://github.com/nihaarikha-04/mpmc_dashboard"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Button
+              className={isDarkMode ? "bg-white text-black" : "bg-black text-white"}
+            >
+              <GitHubLogoIcon className="mr-2" /> View on GitHub
+            </Button>
+          </a>
         </div>
+      </div>
     </div>
-    
   )
 }
 
-export default HydroponicDashboard
+export default HydroTrack
