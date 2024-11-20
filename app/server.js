@@ -5,7 +5,7 @@ const WebSocket = require("ws");
 
 // Initialize the serial port (make sure to replace "COM7" with the correct port)
 const port = new SerialPort({
-  path: "COM7",
+  path: "COM9",
   baudRate: 9600,
 });
 

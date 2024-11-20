@@ -2,7 +2,13 @@
 
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   AreaChart,
   Area,
@@ -29,6 +35,31 @@ const HydroTrack = () => {
   const [currentPh, setCurrentPh] = useState<number>(0);
   const [currentTurbidity, setCurrentTurbidity] = useState<number>(0);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
+  const [result, setResult] = useState<number>(0);
+  const [showResult, setShowResult] = useState<boolean>(false);
+  const [prediction, setPrediction] = useState<string>("");
+
+  const displayResult = () => {
+    if (showResult == false) {
+      const variances = [1.03083095e-6, 7.77854706e-7, -2.53753517e-5]; //ph, conditivity, turbidity
+      const bias = -1.0000033;
+      const prediction_value = 
+      currentPh * variances[0] +
+      currentTds * variances[1] +
+      currentTurbidity * variances[1] +
+      bias;
+
+      setShowResult(true);
+      setResult(prediction_value);
+      if (typeof prediction_value === "number" && prediction_value > 0) {
+        setPrediction("Potable");
+      } else {
+        setPrediction("Not Potable");
+      }
+    } else {
+      setShowResult(false);
+    }
+  };
 
   useEffect(() => {
     const socket = new WebSocket("ws://localhost:8080");
@@ -122,6 +153,9 @@ const HydroTrack = () => {
       document.body.classList.remove("dark");
     }
   }, [isDarkMode]);
+
+  const predictionClass =
+    prediction === "Potable" ? "text-green-600" : "text-red-600";
 
   return (
     <div
@@ -268,6 +302,26 @@ const HydroTrack = () => {
             </div>
           </div>
         </CardContent>
+        <CardFooter className="flex flex-col justify-content items-center">
+          {!showResult && <Button onClick={displayResult}>View Result</Button>}
+          {showResult && <Button onClick={displayResult}>Close Result</Button>}
+          {showResult && (
+            <div className="flex flex-col">
+              <p>
+                The given sample is{" "}
+                <span className={`${predictionClass} font-bold text-xl`}>
+                  {prediction}
+                </span>
+              </p>
+              <p>
+                Prediction value:{" "}
+                <span className="text-blue-600 font-bold text-xl">
+                  {result}
+                </span>
+              </p>
+            </div>
+          )}
+        </CardFooter>
       </Card>
 
       <div className="flex flex-col items-center justify-center gap-4 p-8">
